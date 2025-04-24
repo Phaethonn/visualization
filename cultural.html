@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>中华自然科学经典 - 文化词云</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 引入中文字体 -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+  <!-- 引入自定义样式 -->
+  <link rel="stylesheet" href="CSS/cultural.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Noto Serif SC', serif;
+    }
+
+    :root {
+      --primary-color: #8B0000;    /* 深红色 */
+      --secondary-color: #E8C39E;   /* 典雅米色 */
+      --text-color: #2C1810;        /* 深褐色文字 */
+      --accent-color: #D4AF37;      /* 金色点缀 */
+      --bg-gradient: linear-gradient(135deg, var(--primary-color), #4A0404);
+      --overlay-color: rgba(44, 24, 16, 0.5);
+    }
+
+    body {
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 导航栏样式 */
+    header {
+      width: 100%;
+      height: 68px;
+      background: var(--bg-gradient) !important;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+
+    .brand {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.5em;
+      font-weight: 700;
+      padding-left: 50px;
+      line-height: 68px;
+    }
+
+    .navigation {
+      float: right;
+      height: 100%;
+    }
+
+    .navigation-items {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      padding-right: 50px;
+    }
+
+    .navigation-items a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      letter-spacing: 1px;
+      padding: 0 20px;
+      transition: 0.3s;
+    }
+
+    .navigation-items a:hover {
+      color: var(--accent-color);
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background: var(--bg-gradient);
+      min-width: 160px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .dropdown-content a {
+      color: white;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-content a:hover {
+      background-color: rgba(255,255,255,0.1);
+    }
+
+    /* 主体内容样式 */
+    main {
+      padding-top: 68px;
+      display: flex;
+      min-height: calc(100vh - 68px);
+      position: relative;
+      width: 100vw;
+      overflow-x: hidden;
+    }
+
+    /* 视频背景 */
+    .video-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .video-background video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+    }
+
+    /* 滚动文字区域 */
+    .scrolling-text {
+      flex: 1;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      z-index: 1;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 15px;
+      margin: 1rem;
+    }
+
+    .scrolling-text marquee {
+      margin: 1rem 0;
+      padding: 0.5rem 0;
+      border-radius: 8px;
+
+    }
+
+    .scrolling-text font {
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+      transition: all 0.3s ease;
+    }
+
+    .scrolling-text font:hover {
+      color: var(--accent-color) !important;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+    }
+
+    /* 侧边栏样式 */
+    .sidebar {
+      width: 300px;
+      background: linear-gradient(135deg, rgba(139, 0, 0, 0.7), rgba(74, 4, 4, 0.7));
+      padding: 2rem;
+      border-left: 1px solid rgba(212, 175, 55, 0.3);
+      z-index: 1;
+      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .sidebar h2 {
+      color: var(--accent-color);
+      margin-bottom: 1.5rem;
+      font-size: 1.5em;
+      text-align: center;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent-color);
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar ul li {
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .sidebar ul li::before {
+      content: '◈';
+      position: absolute;
+      left: -1rem;
+      color: var(--accent-color);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar ul li:hover::before {
+      opacity: 1;
+      left: 0.5rem;
+    }
+
+    .sidebar ul li a {
+      color: #fff;
+      text-decoration: none;
+      display: block;
+      padding: 0.8rem 1rem 0.8rem 2rem;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
+    }
+
+    .sidebar ul li a:hover {
+      background: rgba(212, 175, 55, 0.1);
+      color: var(--accent-color);
+      transform: translateX(5px);
+      border-color: rgba(212, 175, 55, 0.3);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    @media (max-width: 1024px) {
+      main {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid rgba(212, 175, 55, 0.3);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航栏 -->
+  <header>
+    <a href="top.html" class="brand">中华自然科学经典</a>
+    <div class="navigation">
+      <div class="navigation-items">
+        <a href="top.html">首页</a>
+        <a href="network.html">知识网络</a>
+        <a href="comparison.html">科技成果</a>
+        <div class="dropdown">
+          <a href="#">历史脉络</a>
+          <div class="dropdown-content">
+            <a href="page2.html">朝代纵览</a>
+            <a href="page3.html">朝代聚焦</a>
+          </div>
+        </div>
+        <a href="cultural.html" style="color: var(--accent-color);">文化词云</a>
+        <a href="culture.html">知识传播</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主体内容 -->
+  <div class="video-background">
+    <video autoplay muted loop playsinline>
+      <source src="video5.mp4" type="video/mp4">
+    </video>
+  </div>
+  
+  <main>
+    <!-- 滚动文字 -->
+    <div class="scrolling-text">
+      <marquee direction="right" scrollamount="4">
+        <font size="4" color="#D4AF37">《墨子》</font>
+      </marquee>
+      <marquee direction="right" scrollamount="6">
+        <font size="4" color="#E8C39E">李时珍</font>
+        &nbsp;&nbsp;&nbsp;
+        <font color="#D4AF37">《黄帝内经》</font>
+      </marquee>
+      <marquee direction="right" scrollamount="9">
+        <font size="3.2" color="#E8C39E">《神农本草经》</font>
+        &nbsp;&nbsp;&nbsp;
+        <font size="3" color="#D4AF37">于成龙</font>
+        &nbsp;&nbsp;&nbsp;
+        <font size="3" color="#E8C39E">《伤寒杂病论》</font>
+      </marquee>
+      <marquee direction="right" scrollamount="8">
+        <font size="5.4" color="#D4AF37">孙思邈</font>
+        &nbsp;&nbsp;&nbsp;
+        <font size="3.6" color="#E8C39E">《本草纲目》</font>
+        &nbsp;&nbsp;&nbsp;
+        <font color="#D4AF37">徐侠客</font>
+      </marquee>
+      <marquee direction="right" scrollamount="4">
+        <font color="#E8C39E">《天工开物》</font>
+        &nbsp;&nbsp;&nbsp;
+        <font color="#D4AF37">《水经注》</font>
+        &nbsp;&nbsp;&nbsp;
+        <font color="#E8C39E">王叔和</font>
+      </marquee>
+      <marquee direction="right" scrollamount="7">
+        <font color="#D4AF37">《永乐大典》</font>
+        &nbsp;&nbsp;&nbsp;
+        <font color="#E8C39E">《齐民要术》</font>
+        &nbsp;&nbsp;&nbsp;
+        <font color="#D4AF37">《梦溪笔谈》</font>
+      </marquee>
+      <marquee direction="right" scrollamount="5">
+        <font size="4" color="#E8C39E">皇甫谧</font>
+        &nbsp;&nbsp;&nbsp;
+        <font color="#D4AF37">《周髀算经》</font>
+        &nbsp;&nbsp;&nbsp;
+        <font size="4" color="#E8C39E">《四部医典》</font>
+        &nbsp;&nbsp;&nbsp;
+        <font color="#D4AF37">大禹</font>
+        &nbsp;&nbsp;&nbsp;
+        <font size="4" color="#E8C39E">周公</font>
+        &nbsp;&nbsp;&nbsp;
+        <font color="#D4AF37">汤若望</font>
+      </marquee>
+    </div>
+
+    <!-- 直达链接侧边栏 -->
+    <aside class="sidebar">
+      <h2>典籍直达</h2>
+      <ul>
+        <li><a href="https://www.zhihu.com/tardis/zm/art/29045085034?source_id=1005">跨越百年中国浪漫</a></li>
+        <li><a href="https://news.qq.com/rain/a/20200731A0DBU200">造物文化的大历史</a></li>
+        <li><a href="https://culture.people.com.cn/n1/2019/0803/c1013-31273947.html">中华科学传承火种</a></li>
+        <li><a href="https://www.neac.gov.cn/seac/c103391/202309/1168018.shtml">道中华--不止医书</a></li>
+        <li><a href="https://news.gmw.cn/2025-02/08/content_37838499.htm">黄帝内经的道与术</a></li>
+        <li><a href="https://news.sciencenet.cn/htmlnews/2025/1/536989.shtm">跌宕起伏的漂流记</a></li>
+        <li><a href="https://www.neac.gov.cn/seac/c103391/202309/1168018.shtml">世界带去中国农业</a></li>
+        <li><a href="https://www.neac.gov.cn/seac/c103391/202309/1168018.shtml">中国数学璀璨明珠</a></li>
+        <li><a href="https://www.thepaper.cn/newsDetail_forward_1912497">墙内开花的墙外香</a></li>
+        <li><a href="https://news.gmw.cn/2022-06/06/content_35788582.htm">脉水寻经--续传承</a></li>
+        <li><a href="https://www.sohu.com/a/225924171_308511">世界最大百科全书</a></li>
+      </ul>
+    </aside>
+  </main>
+
+  <!-- 引入 jQuery 与 echarts 库 -->
+  <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+  <script src="js/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"></script>
+</body>
+</html>

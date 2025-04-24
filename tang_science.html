@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>唐代自然科学经典</title>
+    <link rel="stylesheet" href="CSS/page2.css">
+    <link rel="stylesheet" type="text/css" href="CSS/index.css">
+    <link rel="stylesheet" href="CSS/style1.css">
+    <link rel="stylesheet" href="CSS/tang_science.css">
+    <script src="js/echarts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SimSun', serif;
+        }
+        
+        :root {
+            --primary-color: #8B0000;    /* 深红色 */
+            --secondary-color: #E8C39E;   /* 典雅米色 */
+            --text-color: #2C1810;        /* 深褐色文字 */
+            --accent-color: #D4AF37;      /* 金色点缀 */
+            --bg-gradient: linear-gradient(135deg, var(--primary-color), #4A0404);
+            --overlay-color: rgba(44, 24, 16, 0.5);
+        }
+
+        body {
+            font-family: 'SimSun', serif;
+            background: #F5F2EB;  /* 更柔和的背景色 */
+            min-height: 100vh;
+        }
+
+        /* 导航栏样式优化 */
+        header {
+            width: 100%;
+            height: 68px;
+            background: var(--bg-gradient) !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .brand {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.5em;
+            font-weight: 700;
+            padding-left: 50px;
+            line-height: 68px;
+        }
+
+        .navigation {
+            float: right;
+            height: 100%;
+        }
+
+        .navigation-items {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            padding-right: 50px;
+        }
+
+        .navigation-items a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            letter-spacing: 1px;
+            padding: 0 20px;
+            transition: all 0.3s;
+        }
+
+        .navigation-items a:hover {
+            color: var(--accent-color);
+        }
+
+        /* 下拉菜单样式 */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: var(--bg-gradient);
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track-piece {
+            background-color: #CCCCCC;
+            -webkit-border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb:vertical {
+            height: 5px;
+            background-color: #999999;
+            -webkit-border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb:horizontal {
+            width: 5px;
+            background-color: #CCCCCC;
+            -webkit-border-radius: 6px;
+        }
+
+        /* 主容器样式 */
+        .main-container {
+            margin-top: 68px;
+            padding: 10px;
+            background: rgba(249, 246, 242, 0.8);
+        }
+
+        /* 小标题样式 */
+        .littletitle {
+            background: var(--bg-gradient);
+            width: 100%;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            padding: 0 50px;
+        }
+
+        .navigation2 {
+            height: 100%;
+        }
+
+        .navigation-items2 {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .navigation-items2 a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0 20px;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+
+        .navigation-items2 a:hover {
+            color: var(--accent-color);
+        }
+
+        /* 侧边栏样式调整 */
+        .sidebar {
+            background: #EAE6DD;
+            border-right: 1px solid #D8D0C3;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #EAE6DD, #B4A582, #EAE6DD);
+        }
+
+        .filter-section {
+            background: #F5F2EB;
+            border: 1px solid #D8D0C3;
+            margin: 15px 0;
+            padding: 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .filter-section:hover {
+            box-shadow: 0 4px 12px rgba(180, 165, 130, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .filter-section h3 {
+            color: #6B5B45;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            position: relative;
+            padding-bottom: 8px;
+            background: linear-gradient(90deg, #6B5B45, #B4A582);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .filter-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, #B4A582, transparent);
+        }
+
+        /* 下拉菜单和输入框样式 */
+        select, input[type="range"] {
+            width: 100%;
+            background: #FFFFFF;
+            border: 1px solid #D8D0C3;
+            padding: 8px;
+            border-radius: 4px;
+            color: #6B5B45;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            outline: none;
+        }
+
+        select:hover, input[type="range"]:hover {
+            border-color: #B4A582;
+            box-shadow: 0 0 0 2px rgba(180, 165, 130, 0.1);
+        }
+
+        select:focus {
+            border-color: #B4A582;
+            box-shadow: 0 0 0 2px rgba(180, 165, 130, 0.2);
+        }
+
+        /* 自定义滑块样式 */
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 4px;
+            background: linear-gradient(90deg, #B4A582, #D8C3A5);
+            border-radius: 2px;
+            margin: 10px 0;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #FFFFFF;
+            border: 2px solid #B4A582;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(180, 165, 130, 0.3);
+        }
+
+        /* 书籍列表样式 */
+        .book-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .book-list li {
+            color: #6B5B45;
+            padding: 12px 15px;
+            margin: 5px 0;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            background: linear-gradient(to right, transparent 50%, rgba(180, 165, 130, 0.1) 50%);
+            background-size: 200% 100%;
+            background-position: left bottom;
+        }
+
+        .book-list li:hover {
+            background-position: right bottom;
+            transform: translateX(5px);
+            border-color: #D8C3A5;
+        }
+
+        .book-list li::before {
+            content: '•';
+            color: #B4A582;
+            margin-right: 8px;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .book-list li:hover::before {
+            opacity: 1;
+        }
+
+        .tooltip {
+            display: none;
+            position: absolute;
+            background: #FFFFFF;
+            border: 1px solid #D8C3A5;
+            color: #6B5B45;
+            padding: 12px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 200px;
+            left: calc(100% + 10px);
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .book-list li:hover .tooltip {
+            display: block;
+            opacity: 1;
+            animation: tooltipFadeIn 0.3s ease forwards;
+        }
+
+        @keyframes tooltipFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50%) translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(-50%) translateX(0);
+            }
+        }
+
+        /* 图表容器动画 */
+        .chart-container {
+            background: #FFFFFF;
+            border: 1px solid #E8E4DC;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: chartFadeIn 0.6s ease forwards;
+        }
+
+        .chart-container:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        @keyframes chartFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 时间显示样式 */
+        #time-display {
+            color: #6B5B45;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 1.1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        /* 按钮样式调整 */
+        .view-btn {
+            background: #EAE6DD;
+            color: #6B5B45;
+            border: 1px solid #D8D0C3;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .view-btn:hover {
+            background: #D8D0C3;
+        }
+
+        .view-btn.active {
+            background: #C5B8A5;
+            color: #4A3F2F;
+        }
+
+        /* 页脚样式 */
+        footer {
+            background: #EAE6DD;
+            color: #6B5B45;
+            padding: 15px;
+            text-align: center;
+            border-top: 1px solid #D8D0C3;
+        }
+
+        #back-to-top {
+            background: #D8D0C3;
+            color: #6B5B45;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #back-to-top:hover {
+            background: #C5B8A5;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="top.html" class="brand">中华自然科学经典</a>
+        <div class="navigation">
+            <div class="navigation-items">
+                <a href="top.html">首页</a>
+                <a href="network.html">知识网络</a>
+                <a href="comparison.html">科技成果</a>
+                <div class="dropdown">
+                    <a href="#" style="color: var(--accent-color);">历史脉络</a>
+                    <div class="dropdown-content">
+                        <a href="page2.html">朝代纵览</a>
+                        <a href="tang_science.html" style="color: var(--accent-color);">朝代聚焦</a>
+                    </div>
+                </div>
+                <a href="cultural.html">文化词云</a>
+                <a href="culture.html">知识传播</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="littletitle">
+            <div class="navigation2">
+                <div class="navigation-items2">
+                    <a href="page2.html">历史脉络</a>
+                    <a href="tang_science.html" style="color: var(--accent-color);">朝代聚焦</a>
+                </div>
+            </div>
+        </div>
+  
+    <div class="main-container">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="filter-section">
+                <h3>学科领域</h3>
+                <select id="subject-filter">
+                    <option value="all">全部</option>
+                    <option value="astronomy">天文</option>
+                    <option value="medicine">医学</option>
+                    <option value="mathematics">数学</option>
+                    <option value="agriculture">农业</option>
+                </select>
+            </div>
+            
+            <div class="filter-section">
+                <h3>时间轴</h3>
+                <input type="range" id="time-slider" min="618" max="907" value="618">
+                <div id="time-display">618年</div>
+            </div>
+
+            <div class="filter-section">
+                <h3>重要著作</h3>
+                <ul class="book-list">
+                    <li data-book="《千金要方》">《千金要方》 <span class="tooltip">作者：孙思邈<br>主要内容：医学著作，涵盖了多种疾病的治疗方法和药物使用。</span></li>
+                    <li data-book="《麟德历》">《麟德历》 <span class="tooltip">作者：李淳风<br>主要内容：天文历法，记录了天文观测和历法计算。</span></li>
+                    <li data-book="《缉古算经》">《缉古算经》 <span class="tooltip">作者：王孝通<br>主要内容：数学著作，系统总结了古代数学的知识。</span></li>
+                    <li data-book="《齐民要术》">《齐民要术》 <span class="tooltip">作者：贾思勰<br>主要内容：农业著作，介绍了农作物种植和养殖技术。</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="content-area">
+            <div class="view-controls">
+                <button class="view-btn active" data-view="overview">概览</button>
+                <button class="view-btn" data-view="data">数据</button>
+            </div>
+
+            <div class="view-container">
+                <!-- 概览视图 -->
+                <div class="view-panel active" id="overview-view">
+                    <div id="subject-distribution" class="chart-container"></div>
+                    <div id="timeline" class="chart-container"></div>
+                </div>
+
+                <!-- 数据视图 -->
+                <div class="view-panel" id="data-view">
+                    <div id="subject-trend" class="chart-container"></div>
+                    <div id="geography-heatmap" class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部信息 -->
+    <footer>
+        <div class="footer-content">
+            <span>数据来源：《新唐书》《旧唐书》等史料整理</span>
+            <button id="back-to-top">返回顶部</button>
+        </div>
+    </footer>
+
+    <script src="js/tang_science.js"></script>
+</body>
+</html> 

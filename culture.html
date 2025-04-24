@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>典籍传播与影响</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --primary-color: #8B0000;    /* 深红色 */
+            --secondary-color: #E8C39E;   /* 典雅米色 */
+            --text-color: #2C1810;        /* 深褐色文字 */
+            --accent-color: #D4AF37;      /* 金色点缀 */
+            --bg-gradient: linear-gradient(135deg, var(--primary-color), #4A0404);
+            --overlay-color: rgba(44, 24, 16, 0.5);
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background: #f9f6f2;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        #culture-container {
+            width: 100%;
+            height: calc(100vh - 68px);
+            margin: 0;
+            padding-top: 68px; /* 为导航栏留出空间 */
+            position: relative;
+            display: flex;
+        }
+
+        header {
+    width: 100%;
+    height: 68px;
+    background: var(--bg-gradient) !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.brand {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.5em;
+    font-weight: 700;
+    padding-left: 50px;
+    line-height: 68px;
+}
+
+.navigation {
+    float: right;
+    height: 100%;
+}
+
+.navigation-items {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding-right: 50px;
+}
+
+.navigation-items a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    letter-spacing: 1px;
+    padding: 0 20px;
+    transition: 0.3s;
+}
+
+.navigation-items a:hover {
+    color: var(--accent-color);
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background: var(--bg-gradient);
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-content a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            color: #666;
+        }
+
+        .error {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #c41e3a;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* 左侧典籍介绍区域 */
+        #book-intro {
+            width: 400px;
+            height: calc(100vh - 68px); /* 减去导航栏高度 */
+            background: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            overflow-y: auto;
+            z-index: 100;
+            flex-shrink: 0;
+        }
+
+        /* 右侧主内容区域 */
+        #main-content {
+            flex: 1;
+            height: calc(100vh - 68px); /* 减去导航栏高度 */
+            position: relative;
+            display: flex;
+            flex-direction: row; /* 改为水平布局 */
+        }
+
+        /* 地图容器 */
+        #map-container {
+            flex: 1; /* 占据剩余空间 */
+            height: 100%;
+            position: relative;
+        }
+
+        /* 时间轴容器 */
+        #timeline {
+            width: 350px;
+            height: 100%;
+            background: linear-gradient(to bottom, #f9f6f2, #fff);
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: visible;
+            padding: 40px 0;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 10%;
+            bottom: 10%;
+            width: 4px;
+            height: 80%;
+            background: linear-gradient(to bottom, #c41e3a, #8B0000);
+            transform: translateX(-50%);
+            box-shadow: 0 0 8px rgba(196, 30, 58, 0.3);
+            border-radius: 2px;
+        }
+
+        .timeline-node {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: #c41e3a;
+            border-radius: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(196, 30, 58, 0.4);
+            border: 2px solid #fff;
+        }
+
+        .timeline-node:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+            background: #a01830;
+            animation: nodeHover 0.6s ease infinite alternate;
+        }
+
+        @keyframes nodeHover {
+            from {
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1.2) translateY(-3px);
+            }
+        }
+
+        .timeline-label {
+            position: absolute;
+            white-space: nowrap;
+            font-size: 12px;
+            color: var(--text-color);
+            background: linear-gradient(135deg, rgba(248, 244, 232, 0.95), rgba(232, 195, 158, 0.85));
+            padding: 8px 12px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 20;
+            min-width: 140px;
+            text-align: center;
+            transition: all 0.3s ease;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 1px solid rgba(232, 195, 158, 0.3);
+        }
+
+        .timeline-label div:first-child {
+            font-weight: bold;
+            color: #c41e3a;
+            margin-bottom: 4px;
+        }
+
+        .timeline-label div:nth-child(2) {
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .timeline-label div:last-child {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .timeline-node:hover .timeline-label {
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, rgba(248, 244, 232, 0.98), rgba(232, 195, 158, 0.9));
+        }
+
+        /* 奇数节点标签在左侧 */
+        .timeline-node:nth-child(odd) .timeline-label {
+            right: calc(100% + 25px);
+        }
+
+        /* 偶数节点标签在右侧 */
+        .timeline-node:nth-child(even) .timeline-label {
+            left: calc(100% + 25px);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(196, 30, 58, 0.4);
+            }
+            70% {
+                transform: scale(1.1);
+                box-shadow: 0 0 0 10px rgba(196, 30, 58, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(196, 30, 58, 0);
+            }
+        }
+
+        /* 典籍选择按钮容器 */
+        .book-selector {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="top.html" class="brand">中华自然科学经典</a>
+        <div class="navigation">
+            <div class="navigation-items">
+                <a href="top.html">首页</a>
+                <a href="network.html">知识网络</a>
+                <a href="comparison.html">科技成果</a>
+                <div class="dropdown">
+                    <a href="#">历史脉络</a>
+                    <div class="dropdown-content">
+                        <a href="page2.html">朝代纵览</a>
+                        <a href="page3.html">朝代聚焦</a>
+                    </div>
+                </div>
+                <a href="cultural.html">文化词云</a>
+                <a href="culture.html" style="color: var(--accent-color);">知识传播</a>
+            </div>
+        </div>
+    </header>
+    <div id="culture-container">
+        <div id="book-intro">
+            <h2>典籍介绍</h2>
+            <div class="book-content"></div>
+        </div>
+        <div id="main-content">
+            <div id="map-container"></div>
+            <div id="timeline">
+                <div class="timeline-line"></div>
+            </div>
+        </div>
+        <div class="loading">正在加载可视化内容...</div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="js/culture.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                if (typeof initCulture === 'function') {
+                    initCulture();
+                    document.querySelector('.loading').style.display = 'none';
+                } else {
+                    throw new Error('初始化函数未定义');
+                }
+            } catch (error) {
+                document.querySelector('.loading').style.display = 'none';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error';
+                errorDiv.innerHTML = `
+                    <h3>加载出错</h3>
+                    <p>可视化内容加载失败，请刷新页面重试</p>
+                    <p style="font-size: 12px; margin-top: 10px;">${error.message}</p>
+                `;
+                document.getElementById('culture-container').appendChild(errorDiv);
+            }
+        });
+    </script>
+</body>
+</html> 

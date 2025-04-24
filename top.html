@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中华自然科学经典</title>
+    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+    <!-- 添加思源宋体 -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&display=swap">
+    <!-- 添加动画库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Serif SC', serif;
+        }
+
+        :root {
+            --primary-color: #8B0000;
+            /* 深红色 */
+            --secondary-color: #E8C39E;
+            /* 典雅米色 */
+            --text-color: #2C1810;
+            /* 深褐色文字 */
+            --accent-color: #D4AF37;
+            /* 金色点缀 */
+            --bg-gradient: linear-gradient(135deg, var(--primary-color), #4A0404);
+            --overlay-color: rgba(44, 24, 16, 0.5);
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background: #f9f6f2;
+            min-height: 100vh;
+            /* 取消横向滚动条 */
+            overflow-x: hidden;
+        }
+
+        /* 导航栏基础样式 */
+        header {
+            width: 100%;
+            height: 68px;
+            background: var(--bg-gradient) !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .brand {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.5em;
+            font-weight: 700;
+            padding-left: 50px;
+            line-height: 68px;
+        }
+
+        .navigation {
+            float: right;
+            height: 100%;
+        }
+
+        .navigation-items {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            padding-right: 50px;
+        }
+
+        .navigation-items a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            letter-spacing: 1px;
+            padding: 0 20px;
+            transition: all 0.3s;
+        }
+
+        .navigation-items a:hover {
+            color: var(--accent-color);
+        }
+
+        /* 下拉菜单样式 */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: var(--bg-gradient);
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        #top-container {
+            width: 100%;
+            height: calc(100vh - 68px);
+            margin-top: 68px;
+        }
+
+        /* 全局字体设置 */
+        body {
+            font-family: 'Noto Serif SC', serif;
+        }
+
+        /* 导航栏样式优化 */
+        header {
+            background: var(--bg-gradient) !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .brand {
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .navigation-items a {
+            color: #fff;
+            position: relative;
+            padding: 0 20px;
+            transition: 0.3s;
+        }
+
+        .navigation-items a:hover {
+            color: var(--accent-color) !important;
+        }
+
+        /* 内容区域样式优化 */
+        .home {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            background: var(--primary-color);
+        }
+
+        .home:before {
+            z-index: 777;
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: var(--overlay-color);
+            opacity: 0.2; /* 调整这个值来改变透明度 */
+        }
+
+        /* 装饰元素 */
+        .decorative-border {
+            position: absolute;
+            z-index: 778;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .decorative-border::before,
+        .decorative-border::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border: 2px solid var(--accent-color);
+            opacity: 0.5;
+        }
+
+        .decorative-border::before {
+            top: 20px;
+            left: 20px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .decorative-border::after {
+            bottom: 20px;
+            right: 20px;
+            border-left: none;
+            border-top: none;
+        }
+
+        /* 视频切换效果优化 */
+        .video-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .video-slide.active {
+            opacity: 1;
+        }
+
+        .video-slide video {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .home .content {
+            z-index: 779;
+            padding: 0 100px;
+            margin-left: 50px;
+            max-width: 800px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .home .content.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .home .content h1 {
+            font-size: 3.5em;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .home .content h1 span {
+            display: block;
+            font-size: 0.7em;
+            color: var(--accent-color);
+        }
+
+        .home .content p {
+            font-size: 1.2em;
+            line-height: 1.8;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .home .content p::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--accent-color);
+            opacity: 0.7;
+        }
+
+        .home .content a {
+            background: var(--secondary-color);
+            color: var(--primary-color);
+            border-radius: 30px;
+            padding: 12px 35px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .home .content a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: var(--accent-color);
+            color: var(--text-color);
+        }
+
+        /* 导航按钮样式优化 */
+        .slider-navigation {
+            z-index: 888;
+            position: absolute;
+            bottom: 50px;
+            right: 50px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .slider-navigation .nav-btn {
+            width: 30px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .slider-navigation .nav-btn.active {
+            width: 50px;
+            background: var(--accent-color);
+        }
+
+        .slider-navigation .nav-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        /* 新增箭头按钮样式 */
+        .arrow-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            font-size: 24px;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 999;
+            transition: background 0.3s ease;
+        }
+
+        .arrow-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .arrow-left {
+            left: 20px;
+        }
+
+        .arrow-right {
+            right: 20px;
+        }
+
+        /* 新增过场动画样式 */
+        .transition-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 998;
+        }
+
+        .transition-overlay.active {
+            opacity: 1;
+        }
+
+        /* 响应式设计优化 */
+        @media (max-width: 768px) {
+            header {
+                padding: 12px 20px;
+            }
+
+            .home .content {
+                padding: 0 30px;
+                margin-left: 20px;
+            }
+
+            .home .content h1 {
+                font-size: 2.5em;
+            }
+
+            .slider-navigation {
+                right: 20px;
+                bottom: 30px;
+            }
+
+            .decorative-border::before,
+            .decorative-border::after {
+                width: 50px;
+                height: 50px;
+            }
+
+            .arrow-btn {
+                font-size: 18px;
+                padding: 8px;
+            }
+        }
+
+        /* 添加加载动画 */
+        .animate__animated {
+            animation-duration: 1s;
+        }
+
+        /* 自定义动画类 */
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="top.html" class="brand">中华自然科学经典</a>
+        <div class="navigation">
+            <div class="navigation-items">
+                <a href="top.html" style="color: var(--accent-color);">首页</a>
+                <a href="network.html">知识网络</a>
+                <a href="comparison.html">科技成果</a>
+                <div class="dropdown">
+                    <a href="#">历史脉络</a>
+                    <div class="dropdown-content">
+                        <a href="page2.html">朝代纵览</a>
+                        <a href="page3.html">唐朝聚焦</a>
+                    </div>
+                </div>
+                <a href="cultural.html">文化词云</a>
+                <a href="culture.html">知识传播</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="home">
+        <div class="decorative-border"></div>
+        <div class="transition-overlay"></div>
+        <video class="video-slide active" src="video1.mp4" autoplay muted loop></video>
+        <video class="video-slide" src="video2.mp4" autoplay muted loop></video>
+        <div class="content active">
+            <h1>中华自然科学<br><span>传承与创新</span></h1>
+            <p>项目简介：本作品致力于展示中华文明五千年来在自然科学领域的辉煌成就，从古代四大发明到现代科技创新，展现中华民族对人类文明的重要贡献。</p>
+            <a href="#" class="animate__animated animate__fadeInUp animate__delay-2s">探索历史</a>
+        </div>
+        <div class="content">
+            <h1>中华自然科学<br><span>数据可视化</span></h1>
+            <p>通过现代数据可视化技术，我们将为您呈现中国历代重要科学发现与发明，展示中华文明对世界科技发展的深远影响。</p>
+            <a href="#" class="animate__animated animate__fadeInUp animate__delay-2s">了解更多</a>
+        </div>
+        <div class="slider-navigation">
+            <div class="nav-btn active"></div>
+            <div class="nav-btn"></div>
+        </div>
+        <!-- 新增箭头按钮 -->
+        <button class="arrow-btn arrow-left" id="prev-btn"><i class="fas fa-chevron-left"></i></button>
+        <button class="arrow-btn arrow-right" id="next-btn"><i class="fas fa-chevron-right"></i></button>
+    </section>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            // 响应式导航菜单
+            const menuBtn = document.querySelector(".menu-btn");
+            if (menuBtn) {
+                const navigation = document.querySelector(".navigation");
+                menuBtn.addEventListener("click", () => {
+                    menuBtn.classList.toggle("active");
+                    if (navigation) {
+                        navigation.classList.toggle("active");
+                    }
+                });
+            }
+
+            // 视频滑动导航增强
+            const btns = document.querySelectorAll(".nav-btn");
+            const slides = document.querySelectorAll(".video-slide");
+            const contents = document.querySelectorAll(".content");
+            const transitionOverlay = document.querySelector('.transition-overlay');
+            let currentSlide = 0;
+
+            const sliderNav = function (manual) {
+                // 显示过场动画
+                transitionOverlay.classList.add('active');
+                setTimeout(() => {
+                    btns.forEach((btn) => btn.classList.remove("active"));
+                    slides.forEach((slide) => {
+                        slide.style.transform = '';
+                        slide.style.opacity = '';
+                        slide.classList.remove("active");
+                    });
+                    contents.forEach((content) => content.classList.remove("active"));
+
+                    // 统一的过场动画，从右到左
+                    slides[manual].style.transform = 'translateX(100%)';
+                    slides[manual].style.opacity = 0;
+                    setTimeout(() => {
+                        slides[manual].style.transform = 'translateX(0)';
+                        slides[manual].style.opacity = 1;
+                    }, 30);
+
+                    btns[manual].classList.add("active");
+                    slides[manual].classList.add("active");
+                    contents[manual].classList.add("active");
+
+                    currentSlide = manual;
+                    // 隐藏过场动画
+                    transitionOverlay.classList.remove('active');
+                }, 300);
+            }
+
+            // 处理上一张切换
+            const prevSlide = () => {
+                let prevIndex = (currentSlide - 1 + slides.length) % slides.length;
+                sliderNav(prevIndex);
+            }
+
+            // 处理下一张切换
+            const nextSlide = () => {
+                let nextIndex = (currentSlide + 1) % slides.length;
+                sliderNav(nextIndex);
+            }
+
+            // 点击导航按钮
+            btns.forEach((btn, i) => {
+                btn.addEventListener("click", () => {
+                    sliderNav(i);
+                });
+            });
+
+            // 页面加载完成后默认播放视频1
+            sliderNav(0);
+
+            // 按钮事件监听
+            document.getElementById("prev-btn").addEventListener("click", prevSlide);
+            document.getElementById("next-btn").addEventListener("click", nextSlide);
+        });
+    </script>
+
+</body>
+
+</html>    

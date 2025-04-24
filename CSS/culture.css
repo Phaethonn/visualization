@@ -1,0 +1,157 @@
+/* 文化传承页面样式 */
+.culture-layout {
+    display: grid;
+    grid-template-rows: 60px 1fr 200px 60px;
+    grid-template-columns: 400px 1fr;
+    height: 100%;
+    width: 100%;
+    gap: 20px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* 页面标题 */
+.culture-header {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 10px;
+}
+
+/* 典籍介绍面板 */
+.intro-panel {
+    overflow-y: auto;
+}
+
+.intro-content {
+    animation: fadeIn 0.5s forwards;
+}
+
+.intro-info {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f4e8;
+    border-radius: 8px;
+}
+
+.intro-info p {
+    margin-bottom: 10px;
+}
+
+.significance-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.significance-item {
+    margin-bottom: 10px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.significance-bullet {
+    position: absolute;
+    left: 0;
+    color: #c41e3a;
+}
+
+/* 地图容器 */
+.map-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* 时间轴样式 */
+.timeline-container {
+    grid-column: 1 / -1;
+    position: relative;
+}
+
+.timeline-content {
+    position: relative;
+    padding: 20px 40px;
+}
+
+.timeline-track {
+    position: relative;
+    height: 4px;
+    background: #e0e0e0;
+    margin: 40px 0;
+}
+
+.timeline-point {
+    position: absolute;
+    transform: translateX(-50%);
+}
+
+.timeline-marker {
+    width: 16px;
+    height: 16px;
+    background: #c41e3a;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 0 10px rgba(196, 30, 58, 0.3);
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.timeline-label {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 120px;
+}
+
+.timeline-year {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.timeline-event {
+    font-size: 12px;
+    color: #666;
+}
+
+.timeline-range {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 80px;
+    color: #666;
+}
+
+/* 底部控制栏 */
+.culture-footer {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 10px;
+}
+
+/* 地图标记动画 */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(196, 30, 58, 0.4);
+    }
+    70% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 10px rgba(196, 30, 58, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(196, 30, 58, 0);
+    }
+}
+
+.custom-marker {
+    animation: pulse 1.5s infinite;
+} 
