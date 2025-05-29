@@ -106,7 +106,20 @@ $(function() {
                     }
                 }
             },
-
+            graphic: [
+                {
+                    type: 'text',
+                    left: 'right',
+                    bottom: 'bottom',
+                    style: {
+                        text: '© 2022 高德软件 GS京(2022)1061号',
+                        textAlign: 'right',
+                        fill: '#8B0000',
+                        fontSize: 13,
+                        fontFamily: 'SimSun'
+                    }
+                }
+            ],
             geo: {
                 map: 'china',
                 label: {
